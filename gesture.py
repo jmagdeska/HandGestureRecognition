@@ -44,6 +44,10 @@ while(cap.isOpened()):
                cv2.CHAIN_APPROX_NONE)
 
     cnt = max(contours, key = lambda x: cv2.contourArea(x))
+    extLeft = tuple(cnt[cnt[:, :, 0].argmin()][0])
+    extRight = tuple(cnt[cnt[:, :, 0].argmax()][0])
+    extTop = tuple(cnt[cnt[:, :, 1].argmin()][0])
+    extBot = tuple(cnt[cnt[:, :, 1].argmax()][0])
 
     x,y,w,h = cv2.boundingRect(cnt)
     # cv2.rectangle(crop_img,(x,y),(x+w,y+h),(0,0,255),0)
@@ -54,13 +58,22 @@ while(cap.isOpened()):
     hull = cv2.convexHull(cnt,returnPoints = False)
     defects = cv2.convexityDefects(cnt,hull)
     count_defects = 0
-    cv2.drawContours(thresh1, contours, -1, (0,255,0), 3)
+    # cv2.drawContours(thresh1, contours, -1, (0,255,0), 3)
+    points_left = []
+    points_right = []
+    points_top = []
+    points_bottom = []
     points = []
+
     for i in range(defects.shape[0]):
         s,e,f,d = defects[i,0]
         start = tuple(cnt[s][0])
         end = tuple(cnt[e][0])
         far = tuple(cnt[f][0])
+        # points_left.append(start)
+        # points_right.append(end)
+        # points_top.append(far)
+        # points_bottom.append(far)
         points.append(far)
         a = math.sqrt((end[0] - start[0])**2 + (end[1] - start[1])**2)
         b = math.sqrt((far[0] - start[0])**2 + (far[1] - start[1])**2)
@@ -73,28 +86,19 @@ while(cap.isOpened()):
         cv2.line(crop_img,start,end,[0,255,0],2)
         cv2.circle(crop_img,far,5,[0,0,255],-1)
 
-    lowest = 0
-    highest = 1000
-    left = 1000
-    right = 0
+    left = min(points[0])
+    right = max(points[0])
+    top = min(points[1])
+    bottom = max(points[1])
 
-    for p in points:
-        if p[0] < left:
-            left = p[0]
-        if p[0] > right:
-            right = p[0]
-        if p[1] > lowest:
-            lowest = p[1]
-        if p[1] < highest:
-            highest = p[1]
 
     black = np.zeros((144,144), np.uint8)
 
-    cropped = thresh1[left:right, highest:lowest]
-    resized = cv2.resize(cropped,(124,124))
+    cropped = thresh1[extLeft[0]:extRight[0], extTop[1]:extBot[1]]
+    resized = cv2.resize(cropped,(96,96))
     cv2.imshow("Cropped image", resized)
 
-    black[10:134, 10:134] = resized
+    black[24:120, 24:120] = resized
     cv2.imshow("Final", black)
 
     if k % 256 == 27:
@@ -107,7 +111,6 @@ while(cap.isOpened()):
         #cv2.imwrite("screen" + format(i) + ".png", thresh1)
         cv2.imwrite("screenshots/name" + format(len(list)+1) + ".png", black)
         list.append("name" + format(len(list)+1) + ".png")
-        print("Screenshot saved!")
         print("Screenshot saved!")
         popupmsg(msg)
 
