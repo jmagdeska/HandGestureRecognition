@@ -92,13 +92,12 @@ while(cap.isOpened()):
     bottom = max(points[1])
 
 
-    black = np.zeros((144,144), np.uint8)
+    black = np.zeros((144,176), np.uint8)
 
     cropped = thresh1[extLeft[0]:extRight[0], extTop[1]:extBot[1]]
-    resized = cv2.resize(cropped,(96,96))
-    cv2.imshow("Cropped image", resized)
+    resized = cv2.resize(cropped,(36,36))
 
-    black[24:120, 24:120] = resized
+    black[54:90, 70:106] = resized
     cv2.imshow("Final", black)
 
     if k % 256 == 27:
@@ -109,8 +108,8 @@ while(cap.isOpened()):
     elif k % 256 == 32:
         #SPACE is pressed
         #cv2.imwrite("screen" + format(i) + ".png", thresh1)
-        cv2.imwrite("screenshots/name" + format(len(list)+1) + ".png", black)
-        list.append("name" + format(len(list)+1) + ".png")
+        cv2.imwrite("test_data/test" + format(len(list)+1) + ".png", black)
+        list.append("test" + format(len(list)+1) + ".png")
         print("Screenshot saved!")
         popupmsg(msg)
 
