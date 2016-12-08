@@ -1,6 +1,7 @@
 from sklearn.svm import SVC
 import cv2
 import numpy as np
+import random
 
 class StatModel(object):
     def load(self, fn):
@@ -61,10 +62,6 @@ for i in range(3000):
     #print listing1[i]
     new_listing.append(listing1[i]+".png")
 
-# print "Elements of the new_listing are:    "
-# for i in range(3000):
-#     print new_listing[i]
-
 training_set = []
 testing_set = []
 training_y = []
@@ -100,7 +97,7 @@ for i in range(3000):
     elif i > 2800 and i < 3001:
         training_y.append(14)
     else:
-        print "done with elements of training_y"
+        print "Done with elements of training_y"
 
 y_out = []
 #za sega nepotrebno
@@ -119,6 +116,7 @@ for file in new_listing:
 
 trainData=np.float32(training_set)
 responses=np.float32(training_y)
+print "Done with new_listing"
 
 model = SVM(C=2.67, gamma=0.00001)
 model.train(trainData, np.array(training_y))
@@ -133,8 +131,11 @@ for i in xrange(1,6):
  flat_arr = arr.ravel()
  testing_set.append(flat_arr)
 
+print "Done with test_data"
 testData = np.float32(testing_set)
 y_out = model.predict(testData)
+
+print "RESULTS"
 
 for y in y_out:
     if y == 0.0:
