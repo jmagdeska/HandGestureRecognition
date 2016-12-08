@@ -102,10 +102,6 @@ for i in range(3000):
     else:
         print "done with elements of training_y"
 
-# print "elementi na training_y se:    "
-# for i in range(training_y.__sizeof__()):
-#      print training_y[i]
-
 y_out = []
 #za sega nepotrebno
 #y_correct = [2.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.0, 1.0, 1.0]
@@ -124,12 +120,12 @@ for file in new_listing:
 trainData=np.float32(training_set)
 responses=np.float32(training_y)
 
-model = SVM(C=2.67, gamma=0.01)
+model = SVM(C=2.67, gamma=0.00001)
 model.train(trainData, np.array(training_y))
 
-for i in xrange(1,5):
+for i in xrange(1,6):
  img = cv2.imread("test_data/test" + str(i) + ".png")
- res = cv2.resize(img, (96, 96))
+ res = cv2.resize(img, (64, 64))
  gray_image = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
  xarr = np.squeeze(np.array(gray_image).astype(np.float32))
  m,v = cv2.PCACompute(xarr, np.mean(xarr, axis=0).reshape(1,-1))
