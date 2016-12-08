@@ -1,6 +1,7 @@
 from sklearn.svm import SVC
 import cv2
 import numpy as np
+import random
 
 class StatModel(object):
     def load(self, fn):
@@ -61,9 +62,13 @@ for i in range(3000):
     #print listing1[i]
     new_listing.append(listing1[i]+".png")
 
+
+random.shuffle(new_listing)
+
 # print "Elements of the new_listing are:    "
 # for i in range(3000):
 #     print new_listing[i]
+
 
 training_set = []
 testing_set = []
@@ -105,6 +110,7 @@ for i in range(3000):
 # print "elementi na training_y se:    "
 # for i in range(training_y.__sizeof__()):
 #      print training_y[i]
+random.shuffle(training_y)
 
 y_out = []
 #za sega nepotrebno
@@ -123,13 +129,14 @@ for file in new_listing:
 
 trainData=np.float32(training_set)
 responses=np.float32(training_y)
+print "Done with new_listing"
 
-model = SVM(C=2.67, gamma=0.01)
+model = SVM(C=2.67, gamma=0.0000000001)
 model.train(trainData, np.array(training_y))
 
-for i in xrange(1,5):
+for i in xrange(1,6):
  img = cv2.imread("test_data/test" + str(i) + ".png")
- res = cv2.resize(img, (96, 96))
+ res = cv2.resize(img, (64, 64))
  gray_image = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
  xarr = np.squeeze(np.array(gray_image).astype(np.float32))
  m,v = cv2.PCACompute(xarr, np.mean(xarr, axis=0).reshape(1,-1))
@@ -137,8 +144,11 @@ for i in xrange(1,5):
  flat_arr = arr.ravel()
  testing_set.append(flat_arr)
 
+print "Done with test_data"
 testData = np.float32(testing_set)
 y_out = model.predict(testData)
+
+print "RESULTS"
 
 for y in y_out:
     if y == 0.0:
