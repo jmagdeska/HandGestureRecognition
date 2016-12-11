@@ -91,7 +91,6 @@ while(cap.isOpened()):
     top = min(points[1])
     bottom = max(points[1])
 
-
     black = np.zeros((144,176), np.uint8)
 
     cropped = thresh1[extLeft[0]:extRight[0], extTop[1]:extBot[1]]
