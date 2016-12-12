@@ -94,9 +94,6 @@ for i in range(3000):
         training_y.append(13)
     elif i > 2800 and i < 3001:
         training_y.append(14)
-    else:
-        print "Done with elements of training_y"
-
 y_out = []
 
 for file in new_listing:
@@ -104,18 +101,13 @@ for file in new_listing:
         img = cv2.imread("Renamed_Data/" + file)
         res=cv2.resize(img,(64,64))
         gray_image = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
-        _, thresh1 = cv2.threshold(gray_image, 127, 255,
-                           cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        xarr=np.squeeze(np.array(thresh1).astype(np.float32))
+        xarr=np.squeeze(np.array(gray_image).astype(np.float32))
         m,v=cv2.PCACompute(xarr, np.mean(xarr, axis=0).reshape(1,-1))
         arr= np.array(v)
         flat_arr= arr.ravel()
         training_set.append(flat_arr)
 
 trainData=np.float32(training_set)
-responses=np.float32(training_y)
-print "Done with new_listing"
-
 counter = 1
 cross_train_x = []
 cross_test_x = []
@@ -139,78 +131,25 @@ for i in training_y:
         cross_train_y.append(i)
         counter = counter + 1
 
-crossTrain=np.float32(cross_train_x)
+print "Done with elements of cross_train_x and cross_train_y"
 
-model = SVM(C=2, gamma=0.018)
-model.train(crossTrain, np.array(cross_train_y))
+crossData=np.float32(cross_train_x)
+responses=np.float32(cross_train_y)
 
-# for i in xrange(1,16):
-#  img = cv2.imread("test_data/test" + str(i) + ".png")
-#  res = cv2.resize(img, (64, 64))
-#  gray_image = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
-#  xarr = np.squeeze(np.array(gray_image).astype(np.float32))
-#  m,v = cv2.PCACompute(xarr, np.mean(xarr, axis=0).reshape(1,-1))
-#  arr = np.array(v)
-#  flat_arr = arr.ravel()
-#  testing_set.append(flat_arr)
+model = SVM(C=2, gamma=0.027)
+model.train(crossData, np.array(cross_train_y))
 
-print "Done with test_data"
+print "Done with training"
 
 testData = np.float32(cross_test_x)
+
 y_out = model.predict(testData)
 
-# crossTest = np.float32(testing_set)
-# y_test = model.predict(crossTest)
-
-print "RESULTS"
-
-# for y in y_out:
-#     if y == 0.0:
-#         print "Letter: C"
-#     elif y == 1.0:
-#         print "Letter D"
-#     elif y == 2.0:
-#         print "Letter F"
-#     elif y == 3.0:
-#         print "Number: five"
-#     elif y == 4.0:
-#         print "Number: four"
-#     elif y == 5.0:
-#         print "Letter G"
-#     elif y == 6.0:
-#         print "Letter I"
-#     elif y == 7.0:
-#         print "Letter L"
-#     elif y == 8.0:
-#         print "Number: nine"
-#     elif y == 9.0:
-#         print "Number: one"
-#     elif y == 10.0:
-#         print "Letter R"
-#     elif y == 11.0:
-#         print "Number: three"
-#     elif y == 12.0:
-#         print "Number: two"
-#     elif y == 13.0:
-#         print "Letter: U"
-#     elif y == 14.0:
-#         print "Letter: V"
-#     else:
-#        print "Error"
 
 total = 0
-for x in xrange(199):
-    if y_out[x] == cross_test_y[x]:
+for i in xrange(199):
+    if y_out[i] == cross_test_y[i]:
         total += 1
 
 print "Percentage is " + str((total/199.0)*100) + "%"
 
-# crossTestY = [6, 7, 7, 6, 0, 12, 7, 6, 6, 15, 5, 8, 4, 7, 9]
-#
-# total = 0
-# for x in xrange(15):
-#     if y_test[x] == crossTestY[x]:
-#         total += 1
-#
-# print y_test
-# print "Percentage is " + str((total/15.0)*100) + "%"

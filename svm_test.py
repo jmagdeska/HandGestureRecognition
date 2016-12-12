@@ -117,7 +117,7 @@ print "Done with new_listing"
 model = SVM(C=2.67, gamma=0.00001)
 model.train(trainData, np.array(training_y))
 
-for i in xrange(1,6):
+for i in xrange(1,16):
  img = cv2.imread("test_data/test" + str(i) + ".png")
  res = cv2.resize(img, (64, 64))
  gray_image = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
@@ -166,11 +166,13 @@ for y in y_out:
         print "Letter: V"
     else:
        print "Error"
-#
-# total = 0
-# for i in xrange(9):
-#     if y_out[i] == y_correct[i]:
-#         total += 1
-#
-# print "Percentage is " + str((total/9.0)*100) + "%"
+
+y_correct = [6, 7, 7, 6, 0, 12, 7, 6, 6, 15, 5, 8, 4, 7, 9]
+
+total = 0
+for i in xrange(15):
+    if y_out[i] == y_correct[i]:
+        total += 1
+
+print "Percentage is " + str((total/15.0)*100) + "%"
 
